@@ -2,6 +2,7 @@
     "name": "Sales Cashier Checker Workflow",
     "version": "16.0.1.0.0",
     "category": "Sales",
+    "author": "Abdurrachman Basurroh",
     "summary": "Alur quotation, pembayaran kasir, dan validasi checker inventory",
     "license": "LGPL-3",
     "images": ["static/description/cover.png"],
@@ -14,6 +15,8 @@
         "views/sale_order_views.xml",
         "views/stock_picking_views.xml",
     ],
+    "price": 25.00,
+    "currency": "USD",
     "installable": True,
     "application": False,
 }
