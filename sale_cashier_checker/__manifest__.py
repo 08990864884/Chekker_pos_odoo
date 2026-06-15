@@ -1,0 +1,19 @@
+{
+    "name": "Sales Cashier Checker Workflow",
+    "version": "16.0.1.0.0",
+    "category": "Sales",
+    "summary": "Alur quotation, pembayaran kasir, dan validasi checker inventory",
+    "license": "LGPL-3",
+    "images": ["static/description/cover.png"],
+    "depends": ["pos_sale"],
+    "data": [
+        "security/sale_cashier_checker_security.xml",
+        "security/ir.model.access.csv",
+        "data/ir_sequence_data.xml",
+        "views/sale_cashier_payment_views.xml",
+        "views/sale_order_views.xml",
+        "views/stock_picking_views.xml",
+    ],
+    "installable": True,
+    "application": False,
+}

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_picking_form_cashier_checker" model="ir.ui.view">
+        <field name="name">stock.picking.form.cashier.checker</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form/field[@name='company_id']" position="after">
+                <field name="sale_id" invisible="1"/>
+            </xpath>
+            <xpath expr="//sheet" position="before">
+                <div class="alert alert-warning mb-0" role="alert"
+                     attrs="{'invisible': ['|', ('sale_id', '=', False), ('sale_cashier_state', '=', 'paid')]}">
+                    Delivery cannot be validated until cashier payment is fully paid.
+                </div>
+                <div class="alert alert-success mb-0" role="alert"
+                     attrs="{'invisible': ['|', '|', ('sale_id', '=', False), ('sale_cashier_state', '!=', 'paid'), ('checker_state', '!=', 'waiting_check')]}">
+                    Payment is complete. Check the items, then click Items Checked.
+                </div>
+                <div class="alert alert-info mb-0" role="alert"
+                     attrs="{'invisible': [('checker_state', '!=', 'checked')]}">
+                    Items have been checked. This delivery is ready for validation.
+                </div>
+            </xpath>
+            <xpath expr="//header" position="inside">
+                <button name="action_mark_items_checked"
+                        string="Items Checked"
+                        type="object"
+                        class="oe_highlight"
+                        groups="sale_cashier_checker.group_inventory_checker"
+                        attrs="{'invisible': ['|', '|', ('sale_cashier_state', '!=', 'paid'), ('checker_state', '!=', 'waiting_check'), ('state', 'in', ('done', 'cancel'))]}"/>
+                <field name="checker_state"
+                       widget="statusbar"
+                       statusbar_visible="waiting_check,checked,validated"
+                       attrs="{'invisible': [('checker_state', '=', False)]}"/>
+            </xpath>
+            <xpath expr="//group/group[2]" position="inside">
+                <field name="sale_cashier_state"
+                       widget="badge"
+                       attrs="{'invisible': [('sale_id', '=', False)]}"/>
+                <field name="checker_id"
+                       attrs="{'invisible': [('checker_id', '=', False)]}"/>
+                <field name="checker_date"
+                       attrs="{'invisible': [('checker_date', '=', False)]}"/>
+                <field name="checked_by_id"
+                       attrs="{'invisible': [('checked_by_id', '=', False)]}"/>
+                <field name="checked_date"
+                       attrs="{'invisible': [('checked_date', '=', False)]}"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
