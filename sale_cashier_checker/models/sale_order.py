@@ -45,6 +45,11 @@ class SaleOrder(models.Model):
         store=True,
     )
 
+    def action_confirm(self):
+        if not self.env.context.get("cashier_checker_pos_route"):
+            self._cashier_checker_force_delivery_route()
+        return super().action_confirm()
+
     @api.depends(
         "state",
         "order_line.invoice_status",
@@ -96,11 +101,41 @@ class SaleOrder(models.Model):
         for order in self:
             if order.state not in ("draft", "sent"):
                 raise UserError(_("Only a quotation can be sent to the cashier."))
-        self.action_confirm()
+        self._cashier_checker_force_pos_route()
+        self.with_context(cashier_checker_pos_route=True).action_confirm()
         for order in self:
             order.cashier_checker_workflow = True
             order.message_post(body=_("Sales order sent to the cashier."))
         return True
+
+    def _cashier_checker_force_delivery_route(self):
+        for order in self:
+            route = order.warehouse_id.delivery_route_id
+            if not route:
+                continue
+            order.order_line.filtered(
+                lambda line: not line.display_type and line.product_id.type in ("product", "consu")
+            ).write({"route_id": route.id})
+        return True
+
+    def _cashier_checker_force_pos_route(self):
+        route = self._cashier_checker_pos_route()
+        if not route:
+            raise UserError(_("Please configure an active sale-selectable POS route."))
+        for order in self:
+            order.order_line.filtered(
+                lambda line: not line.display_type and line.product_id.type in ("product", "consu")
+            ).write({"route_id": route.id})
+        return True
+
+    def _cashier_checker_pos_route(self):
+        route = self.env["stock.route"].search([
+            ("name", "ilike", "POS"),
+            ("active", "=", True),
+            ("sale_selectable", "=", True),
+            ("company_id", "in", [False, self.env.company.id]),
+        ], limit=1)
+        return route
 
     def action_register_cashier_payment(self):
         self.ensure_one()
