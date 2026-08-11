@@ -1,5 +1,0 @@
-id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_sale_cashier_payment_sales,sale.cashier.payment sales,model_sale_cashier_payment,sales_team.group_sale_salesman,1,0,0,0
-access_sale_cashier_payment_cashier,sale.cashier.payment cashier,model_sale_cashier_payment,sale_cashier_checker.group_sales_cashier,1,1,1,0
-access_sale_cashier_payment_manager,sale.cashier.payment manager,model_sale_cashier_payment,sale_cashier_checker.group_sales_cashier_manager,1,1,1,1
-
